@@ -87,6 +87,20 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
+    # potentialPath = util.stack()
+    # checked = []
+    #
+    # potentialPath.push(problem.getStartState(), [])
+    # checked.append( problem.getStartState() )
+    #
+    # if potentialPath.isEmpty():
+    #     return []
+    #
+    # while(True):
+    #     currentState, moves = potentialPath.pop()
+
+
+
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
