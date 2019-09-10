@@ -87,16 +87,18 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    states = util.Stack()
-    states.push(problem.getStartState())
+    statesNode = util.Stack()
+    statesNode.push(problem.getStartState())
 
     visited = [] # list of nodes that have already been searched
     finalPath = [] #path to goal state that will be returned
 
     statesPath = util.Stack()
-    currentPosition = states.pop()
+    currentPosition = statesNode.pop()
 
-    while not problem.isGoalState(currentPosition):
+    goalReached = False
+
+    while goalReached == False:
         if currentPosition not in visited:
             # if current node has not been visited, add to visited array and check
             # its children, repeat until a dead end or goal state is reached
@@ -105,14 +107,19 @@ def depthFirstSearch(problem):
             possibleActions = problem.getSuccessors(currentPosition)
 
             for node, action, length in possibleActions:
-                states.push(node)
+                statesNode.push(node)
                 statesPath.push(finalPath + [action])
-            currentPosition = states.pop() # move to the next child node of the current state
+            currentPosition = statesNode.pop() # move to the next child node of the current state
             finalPath = statesPath.pop()
         else:
-            currentPosition = states.pop()
+            currentPosition = statesNode.pop()
             finalPath = statesPath.pop()
             # if node has already been visited, pop from stack
+        # print goalReached
+        if problem.isGoalState(currentPosition):
+            goalReached = True
+            # print "True, Goal node has been reached"
+
     return finalPath
     util.raiseNotDefined()
 
@@ -120,16 +127,18 @@ def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
     #same as depth first search, but with a queue 
-    states = util.Queue()
-    states.push(problem.getStartState())
+    statesNode = util.Queue()
+    statesNode.push(problem.getStartState())
 
     visited = []  # list of nodes that have already been searched
     finalPath = []  # path to goal state that will be returned
 
     statesPath = util.Queue()
-    currentPosition = states.pop()
+    currentPosition = statesNode.pop()
 
-    while not problem.isGoalState(currentPosition):
+    goalReached = False
+
+    while goalReached == False:
         if currentPosition not in visited:
             # if current node has not been visited, add to visited array and check
             # its children, repeat until a dead end or goal state is reached
@@ -138,20 +147,73 @@ def breadthFirstSearch(problem):
             possibleActions = problem.getSuccessors(currentPosition)
 
             for node, action, length in possibleActions:
-                states.push(node)
+                statesNode.push(node)
                 statesPath.push(finalPath + [action])
-            currentPosition = states.pop()  # move to the next child node of the current state
+            currentPosition = statesNode.pop()  # move to the next child node of the current state
             finalPath = statesPath.pop()
         else:
-            currentPosition = states.pop()
+            currentPosition = statesNode.pop()
             finalPath = statesPath.pop()
             # if node has already been visited, pop from stack
+        # print goalReached
+        if problem.isGoalState(currentPosition):
+            goalReached = True
+            # print "True, Goal node has been reached"
+
     return finalPath
     util.raiseNotDefined()
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
+    # Insert the root into the queue
+    # While the queue is not empty
+    #   Dequeue the maximum priority element from the queue
+    #   (If priorities are same, alphabetically smaller path is chosen)
+    #   If the path is ending in the goal state, print the path and exit
+    #   Else
+    #         Insert all the children of the dequeued element, with the cumulative costs as priority
     "*** YOUR CODE HERE ***"
+    #similar to bfs, but with a priority queue -- where priority is measured by path cost
+    statesNode = util.PriorityQueue()
+    statesNode.push(problem.getStartState(),0)
+
+    visited = []  # list of nodes that have already been searched
+    finalPath = []  # path to goal state that will be returned
+
+    statesPath = util.PriorityQueue()
+    currentPosition = statesNode.pop()
+
+    goalReached = False
+
+    while goalReached == False:
+        if currentPosition not in visited:
+            # if current node has not been visited, add to visited array and check
+            # its children, repeat until a dead end or goal state is reached
+            visited.append(currentPosition)
+
+            possibleActions = problem.getSuccessors(currentPosition)
+
+            for node, action, length in possibleActions:
+                # statesNode.push(node)
+                # statesPath.push(finalPath + [action])
+
+                temp = finalPath + [action]
+                cost = problem.getCostOfActions(temp) #find the cost to take the curent path
+                if node not in visited:
+                    statesNode.push(node,cost) #add to priority queue with cost of path
+                    statesPath.push(temp,cost)
+            currentPosition = statesNode.pop()  # move to the next child node of the current state
+            finalPath = statesPath.pop()
+        else:
+            currentPosition = statesNode.pop()
+            finalPath = statesPath.pop()
+            # if node has already been visited, pop from stack
+        # print goalReached
+        if problem.isGoalState(currentPosition):
+            goalReached = True
+            # print "True, Goal node has been reached"
+
+    return finalPath
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
