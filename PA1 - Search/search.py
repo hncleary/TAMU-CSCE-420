@@ -87,25 +87,66 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    # potentialPath = util.stack()
-    # checked = []
-    #
-    # potentialPath.push(problem.getStartState(), [])
-    # checked.append( problem.getStartState() )
-    #
-    # if potentialPath.isEmpty():
-    #     return []
-    #
-    # while(True):
-    #     currentState, moves = potentialPath.pop()
+    states = util.Stack()
+    states.push(problem.getStartState())
 
+    visited = [] # list of nodes that have already been searched
+    finalPath = [] #path to goal state that will be returned
 
+    statesPath = util.Stack()
+    currentPosition = states.pop()
 
+    while not problem.isGoalState(currentPosition):
+        if currentPosition not in visited:
+            # if current node has not been visited, add to visited array and check
+            # its children, repeat until a dead end or goal state is reached
+            visited.append(currentPosition)
+
+            possibleActions = problem.getSuccessors(currentPosition)
+
+            for node, action, length in possibleActions:
+                states.push(node)
+                statesPath.push(finalPath + [action])
+            currentPosition = states.pop() # move to the next child node of the current state
+            finalPath = statesPath.pop()
+        else:
+            currentPosition = states.pop()
+            finalPath = statesPath.pop()
+            # if node has already been visited, pop from stack
+    return finalPath
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
+    #same as depth first search, but with a queue 
+    states = util.Queue()
+    states.push(problem.getStartState())
+
+    visited = []  # list of nodes that have already been searched
+    finalPath = []  # path to goal state that will be returned
+
+    statesPath = util.Queue()
+    currentPosition = states.pop()
+
+    while not problem.isGoalState(currentPosition):
+        if currentPosition not in visited:
+            # if current node has not been visited, add to visited array and check
+            # its children, repeat until a dead end or goal state is reached
+            visited.append(currentPosition)
+
+            possibleActions = problem.getSuccessors(currentPosition)
+
+            for node, action, length in possibleActions:
+                states.push(node)
+                statesPath.push(finalPath + [action])
+            currentPosition = states.pop()  # move to the next child node of the current state
+            finalPath = statesPath.pop()
+        else:
+            currentPosition = states.pop()
+            finalPath = statesPath.pop()
+            # if node has already been visited, pop from stack
+    return finalPath
     util.raiseNotDefined()
 
 def uniformCostSearch(problem):
