@@ -59,7 +59,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="pacman" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="pacman" type="PythonConfigurationType" factoryName="Python">
       <module name="PA1 - Search" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -84,11 +84,6 @@
       <item itemvalue="Python.autograder" />
       <item itemvalue="Python.pacman" />
     </list>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Python.pacman" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SvnConfiguration">
     <configuration />

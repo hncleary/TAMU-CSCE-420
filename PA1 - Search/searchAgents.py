@@ -400,9 +400,30 @@ def cornersHeuristic(state, problem):
     "*** YOUR CODE HERE ***"
     cornersLeft = list(state[1])
     # walls = problem.walls
+    heuristic = 0
+    currentPosition = state[0]
+    # print cornersLeft
 
-
-    # return 0 # Default to trivial solution
+    while not len(cornersLeft) == 0:
+        distances = []
+        # print cornersLeft
+        for x1, y1 in cornersLeft:
+            xy2 = currentPosition
+            #location tuple for use in util.manhattanDistance function
+            xy1 = [x1,y1]
+            # print x1, y1
+            calculatedDistance = util.manhattanDistance(xy1,xy2)
+            distances.append(calculatedDistance)
+        minimumDistance = min(distances)
+        heuristic = heuristic + minimumDistance
+        # print minimumDistance
+        currentPosition = cornersLeft[distances.index(minimumDistance)]
+        cornersLeft.remove(currentPosition)
+        # corners = []
+    # print heuristic
+    return heuristic
+    # default
+    # return 0
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
