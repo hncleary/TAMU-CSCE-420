@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -93,10 +93,15 @@ def depthFirstSearch(problem):
     visited = [] # list of nodes that have already been searched
     finalPath = [] #path to goal state that will be returned
 
+    if statesNode.isEmpty():
+        return []
+
     statesPath = util.Stack()
     currentPosition = statesNode.pop()
 
     goalReached = False
+
+
 
     while goalReached == False:
         if currentPosition not in visited:
@@ -121,22 +126,29 @@ def depthFirstSearch(problem):
             # print "True, Goal node has been reached"
 
     return finalPath
-    util.raiseNotDefined()
+    # util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    #same as depth first search, but with a queue 
+    #same as depth first search, but with a queue
     statesNode = util.Queue()
     statesNode.push(problem.getStartState())
 
     visited = []  # list of nodes that have already been searched
     finalPath = []  # path to goal state that will be returned
 
+    if statesNode.isEmpty():
+        return []
+        # print statesNode.isEmpty()
+
+
     statesPath = util.Queue()
     currentPosition = statesNode.pop()
 
     goalReached = False
+
+
 
     while goalReached == False:
         if currentPosition not in visited:
@@ -161,7 +173,7 @@ def breadthFirstSearch(problem):
             # print "True, Goal node has been reached"
 
     return finalPath
-    util.raiseNotDefined()
+    # util.raiseNotDefined()
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
@@ -179,6 +191,9 @@ def uniformCostSearch(problem):
 
     visited = []  # list of nodes that have already been searched
     finalPath = []  # path to goal state that will be returned
+
+    if statesNode.isEmpty():
+        return []
 
     statesPath = util.PriorityQueue()
     currentPosition = statesNode.pop()
@@ -214,7 +229,7 @@ def uniformCostSearch(problem):
             # print "True, Goal node has been reached"
 
     return finalPath
-    util.raiseNotDefined()
+    # util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
     """
@@ -226,7 +241,56 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # heuristic - estimated distance from the current node to the end node.
+    # cost - distance between the current node and the start node.
+    # total Cost of node = heuristic + cost
+
+    statesNode = util.PriorityQueue()
+    statesNode.push(problem.getStartState(), 0)
+
+    visited = []  # list of nodes that have already been searched
+    finalPath = []  # path to goal state that will be returned
+
+    if statesNode.isEmpty():
+        return []
+
+    statesPath = util.PriorityQueue()
+    currentPosition = statesNode.pop()
+
+    goalReached = False
+
+    while goalReached == False:
+        if currentPosition not in visited:
+            # if current node has not been visited, add to visited array and check
+            # its children, repeat until a dead end or goal state is reached
+            visited.append(currentPosition)
+
+            possibleActions = problem.getSuccessors(currentPosition)
+
+            for node, action, length in possibleActions:
+                # statesNode.push(node)
+                # statesPath.push(finalPath + [action])
+
+                temp = finalPath + [action]
+                cost = problem.getCostOfActions(temp)
+                heuristicCost = cost + heuristic(node, problem)
+                # find the cost to take the current path + heuristic
+                if node not in visited:
+                    statesNode.push(node, heuristicCost)  # add to priority queue with heuristic cost of path
+                    statesPath.push(temp, heuristicCost)
+            currentPosition = statesNode.pop()  # move to the next child node of the current state
+            finalPath = statesPath.pop()
+        else:
+            currentPosition = statesNode.pop()
+            finalPath = statesPath.pop()
+            # if node has already been visited, pop from stack
+        # print goalReached
+        if problem.isGoalState(currentPosition):
+            goalReached = True
+            # print "True, Goal node has been reached"
+
+    return finalPath
+    # util.raiseNotDefined()
 
 
 # Abbreviations

@@ -295,14 +295,31 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # make state[0]  the starting position of the player
+        startingPosition = self.startingPosition
+        # make state[1] a list of all the corners that need to be visited
+        corners = self.corners
+        return[startingPosition, corners]
+
+        # util.raiseNotDefined()
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # corner is a goal state
+        # check to see if all the corners have been visited
+        # state[1] needs to be empty (all corners have been visited)
+        if len(state[1]) > 0:
+            isGoalState = False
+        elif len(state[1]) == 0:
+            isGoalState = True
+        else:
+            print "A serious error has occurred"
+        return isGoalState
+
+        # util.raiseNotDefined()
 
     def getSuccessors(self, state):
         """
@@ -324,7 +341,28 @@ class CornersProblem(search.SearchProblem):
             #   nextx, nexty = int(x + dx), int(y + dy)
             #   hitsWall = self.walls[nextx][nexty]
 
+            #return succesor state, action, and cost
             "*** YOUR CODE HERE ***"
+            currentPosition = state[0]
+            x,y = currentPosition
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x +dx), int(y +dy)
+            hitsWall = self.walls[nextx][nexty]
+
+            if not hitsWall:
+                newPosition = (nextx, nexty)
+                cost = 1 #default cost
+                if newPosition in state[1]:
+                    # print state[1]
+                    # without list(), state[1] will be seen as a tuple :/
+                    cornersLeft = list(state[1])
+                    # if the new position is a corner, remove it from the list so the
+                    # goal state can be discovered
+                    cornersLeft.remove(newPosition)
+                    child = [newPosition, cornersLeft]
+                else:
+                    child = [newPosition, state[1]]
+                successors.append([child, action, cost])
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
@@ -360,7 +398,11 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    cornersLeft = list(state[1])
+    # walls = problem.walls
+
+
+    # return 0 # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
