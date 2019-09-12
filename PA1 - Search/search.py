@@ -289,6 +289,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             goalReached = True
             # print "True, Goal node has been reached"
 
+    # print finalPath
     return finalPath
     # util.raiseNotDefined()
 

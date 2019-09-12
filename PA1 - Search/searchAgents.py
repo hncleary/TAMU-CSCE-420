@@ -517,7 +517,51 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    food = foodGrid.asList()
+    heuristic = 0
+
+    if len(food) == 0:
+        return heuristic
+
+    if problem.isGoalState(state):
+        return heuristic
+    # position is tuple x, y
+    # foodGrid is true or false grid of food location
+    # food is list of food coordinates x, y
+    distances = []
+    # similar to corners problem
+    # but instead find distance from next food rather than corner distance
+
+    # CONSISTENT HEURISTIC
+    for x, y in food:
+        x1y1 = [x,y]
+        x2y2 = position
+        calculatedDistance = util.manhattanDistance(x1y1,x2y2)
+        distances.append(calculatedDistance)
+    closestFood = min(distances)
+    heuristic = heuristic + closestFood
+
+    # currentPosition = cornersLeft[distances.index(minimumDistance)]
+    # cornersLeft.remove(currentPosition)
+
+    #NON-CONSISTENT heuristic
+
+    # while not len(food) == 0:
+    #     distances =[]
+    #     for x, y in food:
+    #         x1y1 = [x, y]
+    #         x2y2 = position
+    #         calculatedDistance = util.manhattanDistance(x1y1, x2y2)
+    #         distances.append(calculatedDistance)
+    #     closestFood = min(distances)
+    #     heuristic = heuristic + closestFood
+    #     foodPosition = food[distances.index(closestFood)]
+    #     food.remove(foodPosition)
+
+    # print heuristic , state
+    return heuristic
+    # return 1
+
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -548,7 +592,9 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
+        return search.breadthFirstSearch(problem)
         util.raiseNotDefined()
+
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -584,7 +630,12 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        foodList = self.food.asList()
+        if state in foodList:
+            return True
+        else:
+            return False
+        # util.raiseNotDefined()
 
 def mazeDistance(point1, point2, gameState):
     """
