@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="de5aca8f-26e6-4199-9e5e-8149040f992e" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/search.py" beforeDir="false" afterPath="$PROJECT_DIR$/search.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/searchAgents.py" beforeDir="false" afterPath="$PROJECT_DIR$/searchAgents.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -18,7 +16,7 @@
   <component name="ProjectId" id="1QQrqFPWlPNlwU6E5hqM6HMZsEn" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/autograder.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../TAMU-CSCE-421/Homework 1" />
     <property name="settings.editor.selected.configurable" value="PyConsoleConfigurable.Python Console" />
   </component>
   <component name="PyConsoleOptionsProvider">
