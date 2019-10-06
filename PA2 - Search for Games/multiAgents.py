@@ -74,7 +74,53 @@ class ReflexAgent(Agent):
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
         "*** YOUR CODE HERE ***"
-        return successorGameState.getScore()
+        # evaluate the strength of currently available player moves
+        if successorGameState.isWin():
+            return 100**2
+
+        # get the positions of all active ghosts
+        ghostDistances = []
+        for ghost in newGhostStates:
+            # measure the manhattan distance from the successor state position to the new ghost state position
+            ghostDistances.append(manhattanDistance(newPos, ghost.getPosition()))
+            nearestGhostDistance = min(ghostDistances)
+        if nearestGhostDistance:
+            ghost_heur = 10/(nearestGhostDistance)
+        else:
+            ghost_heur = 10000
+
+        # get the position of all food that is left in the game
+        foodLocations = newFood.asList()
+        foodDistances = []
+        if not len(foodLocations) == 0:
+            for food in foodLocations:
+                currentDistance = manhattanDistance(newPos, food)
+                foodDistances.append(currentDistance)
+            nearestFood = min(foodDistances)
+        else:
+            nearestFood = 0
+
+        # go towards power pellet
+        if newPos in currentGameState.getCapsules():
+            capsule_heur = 150
+        else:
+            capsule_heur = 0
+        # scare time --> move toward ghosts if they are scared
+        scaredTime = newScaredTimes
+        totalScared = sum(scaredTime)
+
+        # add positive incentive to clear food from the board
+        foodRemaining = len(foodLocations)
+
+        # tweak heuristics
+        food_left_heur = 100*foodRemaining
+        food_heur = 2*nearestFood
+
+        # calculate final heuristic
+        final_heur = -food_heur -ghost_heur -food_left_heur + capsule_heur
+
+        return final_heur
+
 
 def scoreEvaluationFunction(currentGameState):
     """
@@ -128,8 +174,53 @@ class MinimaxAgent(MultiAgentSearchAgent):
           gameState.getNumAgents():
             Returns the total number of agents in the game
         """
+        # make sure to reference self.depth and self.evaluation for the auto-grader system
+        # number of agents minus one ( pacman ) will equate the number of ghosts present
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # first index as pac-man agent at root position and depth
+        score, move = self.miniMax(gameState, 0, 0)
+        return move
+
+    # miniMax algorithm implementation
+    def miniMax(self, gameState, agentIndex, depth):
+        win = gameState.isWin()
+        lose = gameState.isLose()
+        depthEnd = depth == self.depth
+        # end the minimax algorithm if the game is over
+        if win or lose or depthEnd:
+            return self.evaluationFunction(gameState), 0
+
+        possibleMoves = gameState.getLegalActions(agentIndex)
+        ghostCount = gameState.getNumAgents() - 1
+        minimizerMove = ''
+        maximizerMove = ''
+
+        # maximizer (pac-man agent)
+        if agentIndex == 0:
+            # worst possible value for maximizer
+            worstVal = -float("inf")
+            for moves in possibleMoves:
+                successorState = gameState.generateSuccessor(agentIndex, moves)
+                currentVal, moveChoice = self.miniMax(successorState, 1, depth)
+                if currentVal > worstVal:
+                    worstVal, maximizerMove = currentVal, moves
+            return worstVal, maximizerMove
+        # minimizer (ghost agent)
+        else:
+            # worst possible value for minimizer
+            worstVal = float("inf")
+            for moves in possibleMoves:
+                if agentIndex < ghostCount:
+                    successorState = gameState.generateSuccessor(agentIndex, moves)
+                    currentVal, moveChoice = self.miniMax(successorState, agentIndex + 1, depth)
+                else:
+                    successorState = gameState.generateSuccessor(agentIndex, moves)
+                    currentVal, moveChoice = self.miniMax(successorState, 0,  depth + 1)
+                if currentVal < worstVal:
+                    worstVal, minimizerMove = currentVal, moves
+            return worstVal, minimizerMove
+
+
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
@@ -139,7 +230,18 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
     def getAction(self, gameState):
         """
           Returns the minimax action using self.depth and self.evaluationFunction
+
+          #game state.getLegalActions(agentIndex):
+          returns a list of the legal actions for an agent (0 is pacman) ghost are 1 forwards
+
+          #gameState.generateSuccessor(agentIndex, action):
+          returns the successor game state after an agent takes an action
+
+          #gameState.getnumAgents():
+          returns the number of agents in a game (no. of ghosts will be equal to this value - 1 , due to him being
+          indexed as the 0 agent)
         """
+
         "*** YOUR CODE HERE ***"
         util.raiseNotDefined()
 
