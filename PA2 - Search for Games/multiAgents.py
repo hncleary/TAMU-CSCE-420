@@ -186,7 +186,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
         win = gameState.isWin()
         lose = gameState.isLose()
         depthEnd = depth == self.depth
-        # end the minimax algorithm if the game is over
+        # end the mini-max algorithm if the game is over
         if win or lose or depthEnd:
             return self.evaluationFunction(gameState), 0
 
@@ -217,7 +217,8 @@ class MinimaxAgent(MultiAgentSearchAgent):
                     successorState = gameState.generateSuccessor(agentIndex, moves)
                     currentVal, moveChoice = self.miniMax(successorState, 0,  depth + 1)
                 if currentVal < worstVal:
-                    worstVal, minimizerMove = currentVal, moves
+                    worstVal = currentVal
+                    minimizerMove = moves
             return worstVal, minimizerMove
 
 
@@ -243,7 +244,81 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         """
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # implement pruning on miniMax algorithm
+        def alphaBeta(gameState):
+            # worst possible initial values set
+            value = -float("inf")
+            alpha = -float("inf")
+            beta = float("inf")
+            possibleMoves = gameState.getLegalActions(0)
+            for currentAction in possibleMoves:
+                successorState = gameState.generateSuccessor(0, currentAction)
+                minimizerValue = minimizer(successorState, 1, 1, alpha, beta)
+                if minimizerValue > value:
+                    value = minimizerValue
+                if alpha == -float("inf"):
+                    alpha = value
+                    moveDecision = currentAction
+                else:
+                    if value > alpha:
+                        moveDecision = currentAction
+                        alpha = value
+            return moveDecision
+
+        def minimizer(gameState, agentIndex, depth, alpha, beta):
+            totalAgents = gameState.getNumAgents()
+            if agentIndex == totalAgents:
+                return maximizer(gameState, 0, depth + 1, alpha, beta)
+            # initialize value to positive infinity
+            value = float("inf")
+            possibleMoves = gameState.getLegalActions(agentIndex)
+            # for each successor state
+            for currentAction in possibleMoves:
+                successorState = gameState.generateSuccessor(agentIndex, currentAction)
+                # v = minimizer(v,successorState, alpha, beta)
+                moveChoice = minimizer(successorState, agentIndex + 1, depth, alpha, beta)
+                if moveChoice < value:
+                    value = moveChoice
+                # if v < alpha return v
+                if value < alpha:
+                    return value
+                if value < beta:
+                    beta = value
+            # return value
+            if not value == float("inf"):
+                return value
+            # a possible move value has not been determined -- game is over / error
+            else:
+                return self.evaluationFunction(gameState)
+
+        def maximizer(gameState, agentIndex, depth, alpha, beta):
+            # if at the end of the tree
+            if depth > self.depth:
+                return self.evaluationFunction(gameState)
+            # initialize v to -infinity
+            value = -float("inf")
+            # for each successor state
+            possibleMoves = gameState.getLegalActions(agentIndex)
+            for currentAction in possibleMoves:
+                successorState = gameState.generateSuccessor(agentIndex, currentAction)
+                moveChoice = minimizer(successorState, agentIndex + 1, depth, alpha, beta)
+                # set v to successor if successor is greater than v
+                if moveChoice > value:
+                    value = moveChoice
+                # if v is greater than beta return v
+                if value > beta:
+                    return value
+                # if v is greater than alpha alpha = v
+                if value > alpha:
+                    alpha = value
+            # return value
+            if not value == -float("inf"):
+                return value
+            # a possible move value has not been determined -- game is over / error
+            else:
+                return self.evaluationFunction(gameState)
+        return alphaBeta(gameState)
+
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
@@ -258,7 +333,16 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
           legal moves.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # expectimax used to play against imperfect adversary agents
+        # goal is to maximize average score
+        # max nodes like in minimax search
+        # chance nodes --  work like minimizer nodes in minimax search
+        def expectimax():
+            return 0
+
+
+        return expectimax()
+        # util.raiseNotDefined()
 
 def betterEvaluationFunction(currentGameState):
     """
