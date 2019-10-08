@@ -336,13 +336,58 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         # expectimax used to play against imperfect adversary agents
         # goal is to maximize average score
         # max nodes like in minimax search
-        # chance nodes --  work like minimizer nodes in minimax search
-        def expectimax():
-            return 0
+        # chance nodes -->  work like minimizer nodes in minimax search
 
+        # root function --> akin to alphaBeta root function
+        def expectimax(gameState):
+            value = -float("inf")
+            possibleActions = gameState.getLegalActions(0)
+            for move in possibleActions:
+                successorState = gameState.generateSuccessor(0, move)
+                successorValue = expectimizer(successorState, 0, 1)
+                if successorValue > value:
+                    bestMove = move
+                    value = successorValue
+            return bestMove
 
-        return expectimax()
-        # util.raiseNotDefined()
+        # maximizer node for pac-man agent
+        def maximizer(gameState, depth, agentIndex):
+            win = gameState.isWin()
+            lose = gameState.isLose()
+            depthEndNext = self.depth == depth + 1
+            if win or lose or depthEndNext:
+                return self.evaluationFunction(gameState)
+            value = -float("inf")
+            possibleActions = gameState.getLegalActions(0)
+            for move in possibleActions:
+                successor = gameState.generateSuccessor(0, move)
+                expectValue = expectimizer(successor, depth + 1, agentIndex + 1)
+                if value < expectValue:
+                    value = expectValue
+            return value
+
+        # minimizer node for ghost agents --> imperfect adversary
+        def expectimizer(gameState, depth, agentIndex):
+            win = gameState.isWin()
+            lose = gameState.isLose()
+            depthEnd = self.depth == depth
+            if win or lose or depthEnd:
+                return self.evaluationFunction(gameState)
+            possibleActions = gameState.getLegalActions(agentIndex)
+            totalValue = 0
+            ghostCount = gameState.getNumAgents() - 1
+            for move in possibleActions:
+                successorState = gameState.generateSuccessor(agentIndex, move)
+                if agentIndex == ghostCount:
+                    value = maximizer(successorState, depth, 0)
+                else:
+                    value = expectimizer(successorState, depth, agentIndex + 1)
+                totalValue += value
+            # choice's weights are distributed equally 1/N chance
+            # therefore divide by number of total actions N
+            return float(totalValue) / float(len(possibleActions))
+
+        return expectimax(gameState)
 
 def betterEvaluationFunction(currentGameState):
     """
