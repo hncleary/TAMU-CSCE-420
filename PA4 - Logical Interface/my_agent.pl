@@ -57,3 +57,16 @@ wumpusFound/2.
 agentDirection/1,
 nextMove/1,
 secondPass/1.
+
+%   Action is one of:
+%     goforward: move one square along current orientation if possible
+%     turnleft:  turn left 90 degrees
+%     turnright: turn right 90 degrees
+%     grab:      pickup gold if in square
+%     shoot:     shoot an arrow along orientation, killing wumpus if
+%                in that direction
+%     climb:     if in square 1,1, leaves the cave and adds 1000 points
+%                for each piece of gold
+%
+%   Percept = [Stench,Breeze,Glitter,Bump,Scream]
+%             The five parameters are either 'yes' or 'no'.
